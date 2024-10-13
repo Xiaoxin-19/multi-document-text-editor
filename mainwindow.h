@@ -33,6 +33,40 @@ private slots:
 
     void on_action_paste_triggered();
 
+    void on_action_undo_triggered();
+
+    void on_action_redo_triggered();
+
+    void on_action_bold_triggered();
+
+    void on_action_italic_triggered();
+
+    void on_action_underLine_triggered();
+
+    void on_action_left_triggered();
+
+    void on_action_center_triggered();
+
+    void on_action_right_triggered();
+
+    void on_action_double_align_triggered();
+
+    void on_action_color_triggered();
+
+    void on_action_cascade_triggered();
+
+    void on_action_tile_triggered();
+
+    void on_action_view_model_triggered(bool checked);
+
+    void on_actioncloseAll_triggered();
+
+    void on_actionclose_triggered();
+
+    void on_actionnext_triggered();
+
+    void on_actionprev_triggered();
+
 private:
     Ui::MainWindow *ui;
     QLabel *currFilePath;
