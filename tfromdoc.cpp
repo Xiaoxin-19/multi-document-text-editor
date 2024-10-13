@@ -8,13 +8,18 @@
 #include <QStringDecoder>
 #include <QFileInfo>
 #include <QTextList>
+#include <QtPrintSupport/QPrinter>
+#include <QtPrintSupport/QPrintDialog>
+#include <QtPrintSupport/QPrintPreviewDialog>
 
-TFromDoc::TFromDoc(QWidget *parent):TFromDoc(DEFAULT_PATH, parent){}
+TFromDoc::TFromDoc(QWidget *parent):TFromDoc(DEFAULT_PATH,true, parent){}
 
-TFromDoc::TFromDoc(const QString &filepath, QWidget *parent)
+TFromDoc::TFromDoc(const QString &filepath, bool isNew ,QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::TFromDoc)
     , filepath(filepath)
+    ,isNewFile(isNew)
+
 {
     ui->setupUi(this);
     QVBoxLayout *layout = new QVBoxLayout;
@@ -69,7 +74,7 @@ void TFromDoc::actOpen(const QString &path)
 }
 void TFromDoc::actSave()
 {
-    if(filepath == DEFAULT_PATH)
+    if(this->isNewFile)
     {
         actSaveAs();
         return;
@@ -261,13 +266,55 @@ void TFromDoc::actList(int style)
     }
 }
 
+
+
 // 打印相关
 void TFromDoc::actPrint()
 {
+    QPrinter printer;
+    QPrintDialog *dialog=new QPrintDialog(&printer);
+    dialog->setWhatsThis(tr("打印文档"));
 
+    if(ui->textEdit->textCursor().hasSelection())
+        dialog->setOption(QAbstractPrintDialog::PrintSelection,true);
+
+    if (dialog->exec() != QDialog::Accepted) {
+        return; // 如果用户取消，则返回
+    }
+
+    ui->textEdit->print(&printer);
+    delete dialog;
 }
+
+
 void TFromDoc::actPrintPreview()
 {
+    // 创建 QPrinter 对象
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setPageSize(QPageSize(QPageSize::A4)); // 设置纸张大小
+    printer.setPageOrientation(QPageLayout::Portrait); // 设置纸张方向
 
+    // 创建打印预览对话框
+    QPrintPreviewDialog previewDialog(&printer);
+    previewDialog.setWindowTitle("打印预览");
+
+    // 将 QTextEdit 的内容传递给 QPrinter
+    QObject::connect(&previewDialog, &QPrintPreviewDialog::paintRequested, this,[&](QPrinter *printer) {
+        QTextDocument *doc = ui->textEdit->document();
+        doc->print(printer); // 将 QTextEdit 的内容打印到 printer
+    });
+
+    // 显示打印预览对话框
+    if (previewDialog.exec() == QDialog::Accepted) {
+        // 用户确认打印
+        QTextDocument *doc = ui->textEdit->document();
+        doc->print(&printer);
+    }
+}
+
+
+QString TFromDoc::getFilePath() const
+{
+    return this->filepath;
 }
 
