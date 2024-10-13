@@ -39,9 +39,9 @@ public:
     void actRedo();
 
     // 设置格式
-    void actFont();
-    void actFontSize();
-    void actColor();
+    void actFont(const QFont &font);
+    void actFontSize(int value);
+    void actColor(const QColor &);
     void actBold();
     void actItalic();
     void actUnderline();
@@ -53,15 +53,11 @@ public:
     void actAlignJustify();
 
     // 设置列表
-    void actList();
+    void actList(int style);
 
     // 打印相关
     void actPrint();
     void actPrintPreview();
-
-private slots:
-    void on_action_open_triggered();
-    void on_action_font_triggered();
 
 signals:
     void titleChanged(QString title);

@@ -58,11 +58,23 @@ void MainWindow::buildUI()
     listStyleCombox->addItem("编号 (Ⅰ.Ⅱ.Ⅲ.)");
     listStyleCombox->setStatusTip("段落加标号或编号");
     ui->toolBar_2->addWidget(listStyleCombox);
+    connect(listStyleCombox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this](int index){
+        auto tFromDoc = this->activeSubWindow();
+        if(tFromDoc != nullptr){
+            tFromDoc->actList(index);
+        }
+    });
 
     // 设置字体类型
     QFontComboBox* fontComboBox = new QFontComboBox(this);
     fontComboBox->setStatusTip("设置字体类型");
     ui->toolBar_2->addWidget(fontComboBox);
+    connect(fontComboBox, &QFontComboBox::currentFontChanged, this, [this](const QFont &font){
+        auto tFromDoc = this->activeSubWindow();
+        if(tFromDoc != nullptr){
+            tFromDoc->actFont(font);
+        }
+    });
 
     // 设置字号
     QSpinBox* spinBox = new QSpinBox(this);
@@ -70,6 +82,12 @@ void MainWindow::buildUI()
     spinBox->setMinimumWidth(50);
     ui->toolBar_2->addWidget(spinBox);
     spinBox->setStatusTip("设置字号");
+    connect(spinBox, &QSpinBox::valueChanged,this, [this](int value){
+        auto tFromDoc = this->activeSubWindow();
+        if(tFromDoc != nullptr){
+            tFromDoc->actFontSize(value);
+        }
+    });
 
     // 设置状态栏文件信息
     currFilePath = new QLabel("请打开或创建新文件", this);
@@ -208,4 +226,60 @@ void MainWindow::on_action_underLine_triggered()
         tFromDoc->actUnderline();
     }
 }
+
+
+void MainWindow::on_action_left_triggered()
+{
+    qDebug() << "设置左对齐";
+    auto tFromDoc = this->activeSubWindow();
+    if(tFromDoc != nullptr){
+        tFromDoc->actAlignLeft();
+    }
+}
+
+
+void MainWindow::on_action_center_triggered()
+{
+    qDebug() << "设置居中对齐";
+    auto tFromDoc = this->activeSubWindow();
+    if(tFromDoc != nullptr){
+        tFromDoc->actAlignCenter();
+    }
+}
+
+
+void MainWindow::on_action_right_triggered()
+{
+    qDebug() << "设置右对齐";
+    auto tFromDoc = this->activeSubWindow();
+    if(tFromDoc != nullptr){
+        tFromDoc->actAlignRight();
+    }
+}
+
+
+void MainWindow::on_action_double_align_triggered()
+{
+    qDebug() << "设置两端对齐";
+    auto tFromDoc = this->activeSubWindow();
+    if(tFromDoc != nullptr){
+        tFromDoc->actAlignJustify();
+    }
+}
+
+
+
+void MainWindow::on_action_color_triggered()
+{
+    qDebug() << "设置颜色";
+    QColor color = QColorDialog::getColor(Qt::black, this, "选择颜色");
+    if(!color.isValid()){
+        return ;
+    }
+    auto tFromDoc = this->activeSubWindow();
+    if(tFromDoc != nullptr){
+        tFromDoc->actColor(color);
+    }
+}
+
 

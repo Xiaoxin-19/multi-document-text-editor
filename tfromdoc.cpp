@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QStringDecoder>
 #include <QFileInfo>
+#include <QTextList>
 
 TFromDoc::TFromDoc(QWidget *parent):TFromDoc(DEFAULT_PATH, parent){}
 
@@ -24,7 +25,6 @@ TFromDoc::TFromDoc(const QString &filepath, QWidget *parent)
     setAttribute(Qt::WA_DeleteOnClose);
     // 设置友好的窗口标题
     setWindowTitle(QFileInfo(filepath).fileName() + "[*]");
-
     connect(ui->textEdit, &QTextEdit::textChanged, this, [this](){
         this->setWindowModified(true);
     });
@@ -122,17 +122,34 @@ void TFromDoc::TFromDoc::actRedo()
 }
 
 // 设置格式
-void TFromDoc::actFont()
+void TFromDoc::actFont(const QFont &font)
 {
-
+    QTextCharFormat fmt;
+    QTextCursor cursor = ui->textEdit->textCursor();
+    if(!cursor.hasSelection())
+        return;
+    fmt.setFont(font);
+    cursor.mergeCharFormat(fmt);
 }
-void TFromDoc::actFontSize()
-{
 
+
+void TFromDoc::actFontSize(int value)
+{
+    QTextCharFormat fmt;
+    QTextCursor cursor = ui->textEdit->textCursor();
+    if(!cursor.hasSelection())
+        return;
+    fmt.setFontPointSize(value);
+    cursor.mergeCharFormat(fmt);
 }
-void TFromDoc::actColor()
+void TFromDoc::actColor(const QColor &color)
 {
-
+    QTextCharFormat fmt;
+    QTextCursor cursor = ui->textEdit->textCursor();
+    if(!cursor.hasSelection())
+        return;
+    fmt.setForeground(color);
+    cursor.mergeCharFormat(fmt);
 }
 void TFromDoc::actBold()
 {
@@ -165,25 +182,83 @@ void TFromDoc::actUnderline()
 // 设置对齐方式
 void TFromDoc::actAlignLeft()
 {
-
+    ui->textEdit->setAlignment(Qt::AlignLeft);
 }
 void TFromDoc::actAlignCenter()
 {
+    ui->textEdit->setAlignment(Qt::AlignCenter);
 
 }
 void TFromDoc::actAlignRight()
 {
+    ui->textEdit->setAlignment(Qt::AlignRight);
 
 }
 void TFromDoc::actAlignJustify()
 {
+    ui->textEdit->setAlignment(Qt::AlignJustify);
 
 }
 
 // 设置列表
-void TFromDoc::actList()
+void TFromDoc::actList(int style)
 {
+    QTextCursor cursor = ui->textEdit->textCursor();
 
+    if (style != 0) {
+        QTextListFormat::Style stylename;
+
+        switch (style) {
+        case 1:
+            stylename = QTextListFormat::ListDisc;
+            break;
+        case 2:
+            stylename = QTextListFormat::ListCircle;
+            break;
+        case 3:
+            stylename = QTextListFormat::ListSquare;
+            break;
+        case 4:
+            stylename = QTextListFormat::ListDecimal;
+            break;
+        case 5:
+            stylename = QTextListFormat::ListLowerAlpha;
+            break;
+        case 6:
+            stylename = QTextListFormat::ListUpperAlpha;
+            break;
+        case 7:
+            stylename = QTextListFormat::ListLowerRoman;
+            break;
+        case 8:
+            stylename = QTextListFormat::ListUpperRoman;
+            break;
+        default:
+            stylename = QTextListFormat::ListDisc;
+            break;
+        }
+
+        cursor.beginEditBlock();
+
+        QTextBlockFormat blockFmt = cursor.blockFormat();
+        QTextListFormat listFmt;
+
+        if (cursor.currentList()) {
+            listFmt = cursor.currentList()->format();
+        } else {
+            listFmt.setIndent(blockFmt.indent() + 1);
+            cursor.setBlockFormat(blockFmt);
+        }
+
+        listFmt.setStyle(stylename);
+        cursor.createList(listFmt);
+
+        cursor.endEditBlock();
+    } else {
+        QTextBlockFormat bfmt;
+        bfmt.setObjectIndex(-1);
+        cursor.mergeBlockFormat(bfmt);
+    }
 }
 
 // 打印相关
@@ -194,48 +269,5 @@ void TFromDoc::actPrint()
 void TFromDoc::actPrintPreview()
 {
 
-}
-
-void TFromDoc::on_action_open_triggered()
-{
-    QString fileName = QFileDialog::getOpenFileName(this, "打开文件", ".", "C/C++ Files(*.c *.cpp *.h);;文本文件(*.txt);;All Files(*.*)");
-    if (fileName.isEmpty())
-        return;
-
-    if(!QFile::exists(fileName))
-        return;
-
-    QFile file(fileName);
-    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return;
-    QTextStream stream(&file);
-    ui->textEdit->clear();
-    while (!stream.atEnd())
-    {
-        QString str = stream.readLine();
-        ui->textEdit->append(str);
-    }
-    file.close();
-
-    QFileInfo fileInfo(fileName);
-    QString shortName = fileInfo.fileName();
-    this->setWindowTitle(shortName);
-    emit titleChanged(shortName);
-}
-
-
-
-
-void TFromDoc::on_action_font_triggered()
-{
-    QTextCharFormat fmt;
-    QTextCursor cursor = ui->textEdit->textCursor();
-    if(!cursor.hasSelection())
-        return;
-    bool ok = false;
-    QFont font = QFontDialog::getFont(&ok, cursor.charFormat().font());
-    if(!ok) return;
-    fmt.setFont(font);
-    cursor.mergeCharFormat(fmt);
 }
 
