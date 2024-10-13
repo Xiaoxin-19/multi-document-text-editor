@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QLabel>
 #include <QMdiArea>
+#include "tfromdoc.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -21,6 +22,10 @@ public:
 
 private slots:
     void on_action_new_triggered();
+    void on_action_open_triggered();
+    void on_action_save_triggered();
+
+    void on_action_saveAs_triggered();
 
 private:
     Ui::MainWindow *ui;
