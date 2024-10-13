@@ -283,3 +283,52 @@ void MainWindow::on_action_color_triggered()
 }
 
 
+void MainWindow::on_action_cascade_triggered()
+{
+    ui->mdiArea->cascadeSubWindows();
+}
+
+
+void MainWindow::on_action_tile_triggered()
+{
+    ui->mdiArea->tileSubWindows();
+}
+
+void MainWindow::on_action_view_model_triggered(bool checked)
+{
+    if(checked){
+        ui->mdiArea->setViewMode(QMdiArea::TabbedView);
+    }else{
+        ui->mdiArea->setViewMode(QMdiArea::SubWindowView);
+    }
+    ui->mdiArea->setTabsClosable(true);
+    ui->action_cascade->setEnabled(!checked);
+    ui->action_tile->setEnabled(!checked);
+}
+
+
+void MainWindow::on_actioncloseAll_triggered()
+{
+    ui->mdiArea->closeAllSubWindows();
+}
+
+
+void MainWindow::on_actionclose_triggered()
+{
+    ui->mdiArea->closeActiveSubWindow();
+}
+
+
+void MainWindow::on_actionnext_triggered()
+{
+    ui->mdiArea->activatePreviousSubWindow();
+}
+
+
+void MainWindow::on_actionprev_triggered()
+{
+    ui->mdiArea->activateNextSubWindow();
+}
+
+
+    auto tFromDoc = this->activeSubWindow();
