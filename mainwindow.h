@@ -67,6 +67,10 @@ private slots:
 
     void on_actionprev_triggered();
 
+    void on_action_print_triggered();
+
+    void on_action_orint_preview_triggered();
+
 private:
     Ui::MainWindow *ui;
     QLabel *currFilePath;

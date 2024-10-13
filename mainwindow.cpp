@@ -331,4 +331,22 @@ void MainWindow::on_actionprev_triggered()
 }
 
 
+void MainWindow::on_action_print_triggered()
+{
+    // 打印
     auto tFromDoc = this->activeSubWindow();
+    if(tFromDoc != nullptr){
+        tFromDoc->actPrint();
+    }
+}
+
+
+void MainWindow::on_action_orint_preview_triggered()
+{
+    // 打印预览
+    auto tFromDoc = this->activeSubWindow();
+    if(tFromDoc != nullptr){
+        tFromDoc->actPrintPreview();
+    }
+}
+

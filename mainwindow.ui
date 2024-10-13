@@ -53,6 +53,7 @@
     <addaction name="action_print"/>
     <addaction name="separator"/>
     <addaction name="action_quit"/>
+    <addaction name="action_orint_preview"/>
    </widget>
    <widget class="QMenu" name="menu_G">
     <property name="title">
@@ -587,6 +588,14 @@
    </property>
    <property name="toolTip">
     <string>本软件的相关信息</string>
+   </property>
+  </action>
+  <action name="action_orint_preview">
+   <property name="text">
+    <string>打印预览</string>
+   </property>
+   <property name="toolTip">
+    <string>打印预览</string>
    </property>
   </action>
  </widget>
