@@ -20,7 +20,7 @@ class TFromDoc : public QWidget
 
 public:
     explicit TFromDoc(QWidget *parent = nullptr);
-    explicit TFromDoc(const QString &filepath = DEFAULT_PATH, QWidget *parent = nullptr);
+    explicit TFromDoc(const QString &filepath = DEFAULT_PATH, bool isNew = true, QWidget *parent = nullptr);
     ~TFromDoc();
 
     //文件操作
@@ -59,12 +59,15 @@ public:
     void actPrint();
     void actPrintPreview();
 
+    QString getFilePath() const;
+
 signals:
     void titleChanged(QString title);
 
 private:
     Ui::TFromDoc *ui;
     QString filepath;
+    bool isNewFile = true;
 };
 
 #endif // TFROMDOC_H

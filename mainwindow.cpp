@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QMdiSubWindow>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -27,7 +28,8 @@ MainWindow::~MainWindow()
 void MainWindow::on_action_new_triggered()
 {
     qDebug() << "新建文件";
-    TFromDoc* tFromDoc = new TFromDoc(this);
+    QString fileName = "new_doc-%1";
+    TFromDoc* tFromDoc = new TFromDoc(fileName.arg(ui->mdiArea->subWindowList().size() + 1),true,this);
     ui->mdiArea->addSubWindow(tFromDoc);
     tFromDoc->show();
 
@@ -119,7 +121,7 @@ void MainWindow::on_action_open_triggered()
     qDebug() << "打开文件";
     QString filename = QFileDialog::getOpenFileName(this, "打开文件", ".", "C/C++ Files(*.c *.cpp *.h);;文本文件(*.txt *.html *.htm);;All Files(*.*)");
     if(!filename.isEmpty() && QFile::exists(filename)){
-        TFromDoc* tFromDoc = new TFromDoc(filename,this);
+        TFromDoc* tFromDoc = new TFromDoc(filename,false,this);
         auto window = ui->mdiArea->addSubWindow(tFromDoc);
         ui->mdiArea->setActiveSubWindow(window);
         tFromDoc->show();
@@ -350,3 +352,23 @@ void MainWindow::on_action_orint_preview_triggered()
     }
 }
 
+
+void MainWindow::on_action_quit_triggered()
+{
+    // 获取所有子窗口
+    QList<QMdiSubWindow *> subList = ui->mdiArea->subWindowList();
+    // 检查是否有未保存的文件
+    for(auto sub : subList){
+        TFromDoc* tFromDoc = dynamic_cast<TFromDoc *>(sub->widget());
+        if(tFromDoc->isWindowModified()){
+            // 询问是否保存
+            QMessageBox::StandardButton ret = QMessageBox::question(this, QFileInfo(tFromDoc->getFilePath()).fileName(), "是否保存文件", QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+            if(ret == QMessageBox::Save){
+                tFromDoc->actSave();
+            }else if(ret == QMessageBox::Cancel){
+                continue;
+            }
+        }
+    }
+    this->close();
+}

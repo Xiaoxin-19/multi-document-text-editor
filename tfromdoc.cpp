@@ -12,12 +12,14 @@
 #include <QtPrintSupport/QPrintDialog>
 #include <QtPrintSupport/QPrintPreviewDialog>
 
-TFromDoc::TFromDoc(QWidget *parent):TFromDoc(DEFAULT_PATH, parent){}
+TFromDoc::TFromDoc(QWidget *parent):TFromDoc(DEFAULT_PATH,true, parent){}
 
-TFromDoc::TFromDoc(const QString &filepath, QWidget *parent)
+TFromDoc::TFromDoc(const QString &filepath, bool isNew ,QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::TFromDoc)
     , filepath(filepath)
+    ,isNewFile(isNew)
+
 {
     ui->setupUi(this);
     QVBoxLayout *layout = new QVBoxLayout;
@@ -72,7 +74,7 @@ void TFromDoc::actOpen(const QString &path)
 }
 void TFromDoc::actSave()
 {
-    if(filepath == DEFAULT_PATH)
+    if(this->isNewFile)
     {
         actSaveAs();
         return;
@@ -265,6 +267,7 @@ void TFromDoc::actList(int style)
 }
 
 
+
 // 打印相关
 void TFromDoc::actPrint()
 {
@@ -282,6 +285,8 @@ void TFromDoc::actPrint()
     ui->textEdit->print(&printer);
     delete dialog;
 }
+
+
 void TFromDoc::actPrintPreview()
 {
     // 创建 QPrinter 对象
@@ -305,5 +310,11 @@ void TFromDoc::actPrintPreview()
         QTextDocument *doc = ui->textEdit->document();
         doc->print(&printer);
     }
+}
+
+
+QString TFromDoc::getFilePath() const
+{
+    return this->filepath;
 }
 
