@@ -99,15 +99,15 @@ void TFromDoc::actSaveAs()
 //编辑操作
 void TFromDoc::actCopy()
 {
-
+    ui->textEdit->copy();
 }
 void TFromDoc::actCut()
 {
-
+    ui->textEdit->cut();
 }
 void TFromDoc::actPaste()
 {
-
+    ui->textEdit->paste();
 }
 
 // 撤销与重做

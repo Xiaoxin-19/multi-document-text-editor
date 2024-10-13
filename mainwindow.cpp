@@ -86,6 +86,16 @@ void MainWindow::buildUI()
 
 }
 
+
+TFromDoc* MainWindow::activeSubWindow()
+{
+    auto sub = ui->mdiArea->activeSubWindow();
+    if(sub == nullptr) return nullptr;
+    TFromDoc* tFromDoc = dynamic_cast<TFromDoc *>(sub->widget());
+    return tFromDoc;
+}
+
+
 void MainWindow::on_action_open_triggered()
 {
     qDebug() << "打开文件";
@@ -102,9 +112,8 @@ void MainWindow::on_action_open_triggered()
 
 void MainWindow::on_action_save_triggered()
 {
-    auto sub = ui->mdiArea->activeSubWindow();
-    if(sub == nullptr) return;
-    TFromDoc* tFromDoc = dynamic_cast<TFromDoc *>(sub->widget());
+    qDebug() << "保存文件";
+    auto tFromDoc = this->activeSubWindow();
     if(tFromDoc != nullptr){
         tFromDoc->actSave();
     }
@@ -113,11 +122,40 @@ void MainWindow::on_action_save_triggered()
 
 void MainWindow::on_action_saveAs_triggered()
 {
-    auto sub = ui->mdiArea->activeSubWindow();
-    if(sub == nullptr) return;
-    TFromDoc* tFromDoc = dynamic_cast<TFromDoc *>(sub->widget());
+    qDebug() << "另存为文件";
+    auto tFromDoc = this->activeSubWindow();
     if(tFromDoc != nullptr){
         tFromDoc->actSaveAs();
+    }
+}
+
+
+void MainWindow::on_action_cut_triggered()
+{
+    qDebug() << "剪切文本";
+    auto tFromDoc = this->activeSubWindow();
+    if(tFromDoc != nullptr){
+        tFromDoc->actCut();
+    }
+}
+
+
+void MainWindow::on_action_copy_triggered()
+{
+    qDebug() << "复制文本";
+    auto tFromDoc = this->activeSubWindow();
+    if(tFromDoc != nullptr){
+        tFromDoc->actCopy();
+    }
+}
+
+
+void MainWindow::on_action_paste_triggered()
+{
+    qDebug() << "粘贴文本";
+    auto tFromDoc = this->activeSubWindow();
+    if(tFromDoc != nullptr){
+        tFromDoc->actPaste();
     }
 }
 

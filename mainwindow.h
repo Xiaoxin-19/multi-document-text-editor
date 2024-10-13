@@ -27,11 +27,18 @@ private slots:
 
     void on_action_saveAs_triggered();
 
+    void on_action_cut_triggered();
+
+    void on_action_copy_triggered();
+
+    void on_action_paste_triggered();
+
 private:
     Ui::MainWindow *ui;
     QLabel *currFilePath;
 
 private:
     void buildUI();
+    TFromDoc* activeSubWindow();
 };
 #endif // MAINWINDOW_H
