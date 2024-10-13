@@ -12,17 +12,20 @@ namespace Ui {
 class TFromDoc;
 }
 
+const QString DEFAULT_PATH = "new_doc";
+
 class TFromDoc : public QWidget
 {
     Q_OBJECT
 
 public:
     explicit TFromDoc(QWidget *parent = nullptr);
+    explicit TFromDoc(const QString &filepath = DEFAULT_PATH, QWidget *parent = nullptr);
     ~TFromDoc();
 
     //文件操作
     void actNew();
-    void actOpen();
+    void actOpen(const QString &path);
     void actSave();
     void actSaveAs();
 
@@ -65,6 +68,7 @@ signals:
 
 private:
     Ui::TFromDoc *ui;
+    QString filepath;
 };
 
 #endif // TFROMDOC_H

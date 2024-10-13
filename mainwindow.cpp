@@ -7,6 +7,8 @@
 #include <QColorDialog>
 #include <QLabel>
 #include <QDebug>
+#include <QFileDialog>
+#include <QMdiSubWindow>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -24,7 +26,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_action_new_triggered()
 {
-    qDebug()<<"new triggered";
+    qDebug() << "新建文件";
+    TFromDoc* tFromDoc = new TFromDoc(this);
+    ui->mdiArea->addSubWindow(tFromDoc);
+    tFromDoc->show();
+
+    // 设置工具栏的可编辑状态
 }
 
 
@@ -71,6 +78,46 @@ void MainWindow::buildUI()
     // 设置MDI区域
     ui->mdiArea->setTabsClosable(true);
     ui->mdiArea->setTabsMovable(true);
-    this->setCentralWidget(ui->mdiArea);
+    ui->mdiArea->setViewMode(QMdiArea::TabbedView);
+
+    // 设置窗口最大化并设置中心窗口
     this->setWindowState(Qt::WindowMaximized);
+    this->setCentralWidget(ui->mdiArea);
+
 }
+
+void MainWindow::on_action_open_triggered()
+{
+    qDebug() << "打开文件";
+    QString filename = QFileDialog::getOpenFileName(this, "打开文件", ".", "C/C++ Files(*.c *.cpp *.h);;文本文件(*.txt *.html *.htm);;All Files(*.*)");
+    if(!filename.isEmpty() && QFile::exists(filename)){
+        TFromDoc* tFromDoc = new TFromDoc(filename,this);
+        auto window = ui->mdiArea->addSubWindow(tFromDoc);
+        ui->mdiArea->setActiveSubWindow(window);
+        tFromDoc->show();
+        tFromDoc->actOpen(filename);
+    }
+}
+
+
+void MainWindow::on_action_save_triggered()
+{
+    auto sub = ui->mdiArea->activeSubWindow();
+    if(sub == nullptr) return;
+    TFromDoc* tFromDoc = dynamic_cast<TFromDoc *>(sub->widget());
+    if(tFromDoc != nullptr){
+        tFromDoc->actSave();
+    }
+}
+
+
+void MainWindow::on_action_saveAs_triggered()
+{
+    auto sub = ui->mdiArea->activeSubWindow();
+    if(sub == nullptr) return;
+    TFromDoc* tFromDoc = dynamic_cast<TFromDoc *>(sub->widget());
+    if(tFromDoc != nullptr){
+        tFromDoc->actSaveAs();
+    }
+}
+
