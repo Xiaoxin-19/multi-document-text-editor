@@ -33,6 +33,12 @@ private slots:
 
     void on_action_paste_triggered();
 
+    void on_action_undo_triggered();
+
+    void on_action_redo_triggered();
+
+    void on_action_bold_triggered();
+
 private:
     Ui::MainWindow *ui;
     QLabel *currFilePath;

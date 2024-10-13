@@ -111,10 +111,14 @@ void TFromDoc::actPaste()
 }
 
 // 撤销与重做
-void actUndo();
+void TFromDoc::actUndo()
+{
+    ui->textEdit->undo();
+}
+
 void TFromDoc::TFromDoc::actRedo()
 {
-
+    ui->textEdit->redo();
 }
 
 // 设置格式
@@ -132,15 +136,30 @@ void TFromDoc::actColor()
 }
 void TFromDoc::actBold()
 {
-
+    QTextCharFormat fmt;
+    QTextCursor cursor = ui->textEdit->textCursor();
+    if(!cursor.hasSelection())
+        return;
+    fmt.setFontWeight(cursor.charFormat().fontWeight() == QFont::Bold ? QFont::Normal : QFont::Bold);
+    cursor.mergeCharFormat(fmt);
 }
 void TFromDoc::actItalic()
 {
-
+    QTextCharFormat fmt;
+    QTextCursor cursor = ui->textEdit->textCursor();
+    if(!cursor.hasSelection())
+        return;
+    fmt.setFontItalic(!cursor.charFormat().fontItalic());
+    cursor.mergeCharFormat(fmt);
 }
 void TFromDoc::actUnderline()
 {
-
+    QTextCharFormat fmt;
+    QTextCursor cursor = ui->textEdit->textCursor();
+    if(!cursor.hasSelection())
+        return;
+    fmt.setFontUnderline(!cursor.charFormat().fontUnderline());
+    cursor.mergeCharFormat(fmt);
 }
 
 // 设置对齐方式

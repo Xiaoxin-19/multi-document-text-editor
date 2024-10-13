@@ -159,3 +159,53 @@ void MainWindow::on_action_paste_triggered()
     }
 }
 
+
+void MainWindow::on_action_undo_triggered()
+{
+    qDebug() << "撤销";
+    auto tFromDoc = this->activeSubWindow();
+    if(tFromDoc != nullptr){
+        tFromDoc->actUndo();
+    }
+}
+
+
+void MainWindow::on_action_redo_triggered()
+{
+    qDebug() << "重做";
+    auto tFromDoc = this->activeSubWindow();
+    if(tFromDoc != nullptr){
+        tFromDoc->actRedo();
+    }
+}
+
+
+void MainWindow::on_action_bold_triggered()
+{
+    qDebug() << "设置粗体";
+    auto tFromDoc = this->activeSubWindow();
+    if(tFromDoc != nullptr){
+        tFromDoc->actBold();
+    }
+}
+
+
+void MainWindow::on_action_italic_triggered()
+{
+    qDebug() << "设置斜体";
+    auto tFromDoc = this->activeSubWindow();
+    if(tFromDoc != nullptr){
+        tFromDoc->actItalic();
+    }
+}
+
+
+void MainWindow::on_action_underLine_triggered()
+{
+    qDebug() << "设置下划线";
+    auto tFromDoc = this->activeSubWindow();
+    if(tFromDoc != nullptr){
+        tFromDoc->actUnderline();
+    }
+}
+
